@@ -134,3 +134,4 @@ git daemon --reuseaddr --base-path=. --export-all
 - 仅读取操作（clone/pull），不会向远程推送
 - 用户修改锁屏密码会导致密钥失效，需重新 clone 所有仓库
 - 仓库较大时首次 clone 和同步可能需要一些时间
+- 构建 release：./gradlew assembleRelease

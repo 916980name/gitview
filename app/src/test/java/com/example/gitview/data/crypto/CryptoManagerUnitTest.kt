@@ -1,5 +1,6 @@
 package com.example.gitview.data.crypto
 
+import kotlinx.serialization.encodeToString
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -107,15 +108,13 @@ class CryptoManagerUnitTest {
     fun encryptionInfo_serialization() {
         val info = EncryptionInfo(
             level = EncryptionLevel.TEE,
-            userAuthenticationRequired = true,
+            unlockedDeviceRequired = true,
             keySize = 256,
             algorithm = "AES/GCM/NoPadding",
             createdAt = "2026-06-21T10:00:00Z"
         )
 
-        val json = kotlinx.serialization.json.Json.encodeToString(
-            kotlinx.serialization.builtins.serializer(), info
-        )
+        val json = kotlinx.serialization.json.Json.encodeToString(info)
         assertTrue(json.contains("TEE"))
         assertTrue(json.contains("AES/GCM/NoPadding"))
 
