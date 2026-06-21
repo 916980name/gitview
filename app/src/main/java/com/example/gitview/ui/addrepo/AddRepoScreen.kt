@@ -64,7 +64,7 @@ fun AddRepoScreen(
                 value = uiState.url,
                 onValueChange = { viewModel.updateUrl(it) },
                 label = { Text("Git URL") },
-                placeholder = { Text("git://192.168.1.100/my-repo.git") },
+                placeholder = { Text("git://192.168.0.1/my-repo") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !uiState.isCloning

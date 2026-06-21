@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class AddRepoUiState(
-    val url: String = "",
+    val url: String = "git://192.168.0.1/",
     val name: String = "",
     val isCloning: Boolean = false,
     val resultMessage: String? = null,
