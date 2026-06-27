@@ -88,7 +88,10 @@ fun MarkdownViewerScreen(
                             TextView(context).apply {
                                 setPadding(32, 32, 32, 32)
                                 textSize = 16f
-                                Markwon.create(context).setMarkdown(this, content)
+                                Markwon.builder(context)
+                                        .usePlugin(io.noties.markwon.ext.tables.TablePlugin.create(context))
+                                        .build()
+                                        .setMarkdown(this, content)
                                 Linkify.addLinks(this, Linkify.WEB_URLS)
                             }
                         },

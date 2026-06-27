@@ -48,6 +48,7 @@ androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "l
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 # Markdown (Markwon)
 markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }
+markwon-ext-tables = { group = "io.noties.markwon", name = "ext-tables", version.ref = "markwon" }
 # Material Icons Extended (ArrowBack etc.)
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 

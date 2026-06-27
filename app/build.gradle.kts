@@ -72,6 +72,7 @@ dependencies {
 
     // Markdown
     implementation(libs.markwon.core)
+    implementation(libs.markwon.ext.tables)
     implementation(libs.androidx.compose.material.icons.extended)
 
     testImplementation(libs.junit)
