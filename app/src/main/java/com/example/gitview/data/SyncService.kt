@@ -101,6 +101,38 @@ class SyncService(
         }
     }
 
+    suspend fun updateRepoRemote(
+        repo: RepoEntity,
+        newUrl: String,
+        newName: String?
+    ): SyncResult = withContext(Dispatchers.IO) {
+        return@withContext try {
+            val tempDir = cryptoManager.getRepoTempDir(repo.uuid)
+            val encryptedDir = cryptoManager.getRepoEncryptedDir(repo.uuid)
+
+            if (tempDir.exists()) tempDir.deleteRecursively()
+
+            if (encryptedDir.exists()) {
+                try {
+                    cryptoManager.decryptRepoFiles(encryptedDir, tempDir)
+                    gitManager.updateRemoteUrl(tempDir, newUrl)
+                    cryptoManager.encryptRepoFiles(tempDir, encryptedDir)
+                } finally {
+                    cryptoManager.cleanTempDir(repo.uuid)
+                }
+            }
+
+            repoRepository.updateUrlAndName(
+                repo.id,
+                newUrl,
+                newName ?: repo.name
+            )
+            SyncResult.Success("Repository updated")
+        } catch (e: Exception) {
+            SyncResult.Error("Failed to update: ${e.message}")
+        }
+    }
+
     suspend fun openRepoForBrowsing(repoEntity: RepoEntity): SyncResult = withContext(Dispatchers.IO) {
         return@withContext try {
             val tempDir = cryptoManager.getRepoTempDir(repoEntity.uuid)

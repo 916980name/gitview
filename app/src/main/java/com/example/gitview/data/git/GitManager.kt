@@ -65,6 +65,14 @@ class GitManager {
         return changedFiles
     }
 
+    fun updateRemoteUrl(repoDir: File, newUrl: String) {
+        Git.open(repoDir).use { git ->
+            val config = git.repository.config
+            config.setString("remote", "origin", "url", newUrl)
+            config.save()
+        }
+    }
+
     fun getFileTree(repoDir: File): List<FileNode> {
         val gitDir = File(repoDir, ".git")
         return repoDir.walkTopDown()

@@ -19,5 +19,8 @@ class RepoRepository(private val repoDao: RepoDao) {
     suspend fun updateLastSync(id: Long, syncTime: Long, commitMessage: String) =
         repoDao.updateLastSync(id, syncTime, commitMessage)
 
+    suspend fun updateUrlAndName(id: Long, url: String, name: String) =
+        repoDao.updateUrlAndName(id, url, name)
+
     suspend fun deleteByUuid(uuid: String) = repoDao.deleteByUuid(uuid)
 }

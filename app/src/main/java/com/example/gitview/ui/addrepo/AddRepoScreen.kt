@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,7 +45,7 @@ fun AddRepoScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Repository") },
+                title = { Text(if (uiState.isEditMode) "Edit Repository" else "Add Repository") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -85,7 +86,7 @@ fun AddRepoScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { viewModel.addRepo() },
+                onClick = { viewModel.saveRepo() },
                 enabled = viewModel.isValidUrl() && !uiState.isCloning,
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -94,8 +95,17 @@ fun AddRepoScreen(
                         modifier = Modifier.padding(end = 8.dp),
                         strokeWidth = 2.dp
                     )
+                    Text(if (uiState.isEditMode) "Saving..." else "Cloning...")
+                } else if (uiState.isEditMode) {
+                    Icon(
+                        Icons.Default.Check,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text("Save Changes")
+                } else {
+                    Text("Clone Repository")
                 }
-                Text(if (uiState.isCloning) "Cloning..." else "Clone Repository")
             }
 
             uiState.resultMessage?.let { message ->

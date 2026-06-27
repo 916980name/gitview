@@ -28,6 +28,9 @@ interface RepoDao {
     @Query("UPDATE repos SET lastSyncTime = :syncTime, lastCommitMessage = :commitMessage WHERE id = :id")
     suspend fun updateLastSync(id: Long, syncTime: Long, commitMessage: String)
 
+    @Query("UPDATE repos SET remoteUrl = :url, name = :name WHERE id = :id")
+    suspend fun updateUrlAndName(id: Long, url: String, name: String)
+
     @Query("DELETE FROM repos WHERE uuid = :uuid")
     suspend fun deleteByUuid(uuid: String)
 }

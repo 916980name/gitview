@@ -40,17 +40,25 @@ fun AppNavGraph(
             )
             RepoListScreen(
                 viewModel = viewModel,
-                onAddRepo = { navController.navigate(Screen.AddRepo.route) },
+                onAddRepo = { navController.navigate(Screen.AddRepo.createRoute()) },
                 onRepoClick = { repoId ->
                     navController.navigate(Screen.FileTree.createRoute(repoId))
+                },
+                onEditRepo = { repoId ->
+                    navController.navigate(Screen.AddRepo.createRoute(repoId))
                 },
                 onSettings = { navController.navigate(Screen.Settings.route) }
             )
         }
 
-        composable(Screen.AddRepo.route) {
+        composable(
+            route = Screen.AddRepo.route,
+            arguments = listOf(navArgument("repoId") { type = NavType.LongType; defaultValue = -1L })
+        ) { backStackEntry ->
+            val repoId = backStackEntry.arguments?.getLong("repoId") ?: -1L
+            val editRepoId = if (repoId == -1L) null else repoId
             val viewModel: AddRepoViewModel = viewModel(
-                factory = AddRepoViewModel.Factory(syncService)
+                factory = AddRepoViewModel.Factory(editRepoId, repoRepository, syncService)
             )
             AddRepoScreen(
                 viewModel = viewModel,

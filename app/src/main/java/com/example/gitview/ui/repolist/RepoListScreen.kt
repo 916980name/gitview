@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -57,11 +56,12 @@ fun RepoListScreen(
     viewModel: RepoListViewModel,
     onAddRepo: () -> Unit,
     onRepoClick: (Long) -> Unit,
+    onEditRepo: (Long) -> Unit,
     onSettings: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    var repoToDelete by remember { mutableStateOf<RepoEntity?>(null) }
+    var selectedRepo by remember { mutableStateOf<RepoEntity?>(null) }
 
     LaunchedEffect(uiState.syncMessage) {
         uiState.syncMessage?.let {
@@ -134,7 +134,7 @@ fun RepoListScreen(
                         isSyncing = isSyncing,
                         onClick = { onRepoClick(repo.id) },
                         onSync = { viewModel.syncRepo(repo) },
-                        onDelete = { repoToDelete = repo },
+                        onLongPress = { selectedRepo = repo },
                         modifier = Modifier
                     )
                 }
@@ -142,22 +142,30 @@ fun RepoListScreen(
         }
     }
 
-    repoToDelete?.let { repo ->
+    selectedRepo?.let { repo ->
         AlertDialog(
-            onDismissRequest = { repoToDelete = null },
-            title = { Text("Delete Repository") },
-            text = { Text("Are you sure you want to delete \"${repo.name}\"? This action cannot be undone.") },
+            onDismissRequest = { selectedRepo = null },
+            title = { Text(repo.name) },
             confirmButton = {
-                TextButton(onClick = {
-                    viewModel.deleteRepo(repo)
-                    repoToDelete = null
-                }) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { repoToDelete = null }) {
-                    Text("Cancel")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { selectedRepo = null }) {
+                        Text("Cancel")
+                    }
+                    TextButton(onClick = {
+                        selectedRepo = null
+                        viewModel.deleteRepo(repo)
+                    }) {
+                        Text("Delete", color = MaterialTheme.colorScheme.error)
+                    }
+                    TextButton(onClick = {
+                        selectedRepo = null
+                        onEditRepo(repo.id)
+                    }) {
+                        Text("Edit")
+                    }
                 }
             }
         )
@@ -171,13 +179,13 @@ private fun RepoCard(
     isSyncing: Boolean,
     onClick: () -> Unit,
     onSync: () -> Unit,
-    onDelete: () -> Unit,
+    onLongPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .combinedClickable(onClick = onClick, onLongClick = onDelete)
+            .combinedClickable(onClick = onClick, onLongClick = onLongPress)
     ) {
         Row(
             modifier = Modifier
